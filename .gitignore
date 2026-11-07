@@ -1,0 +1,17 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+.idea/
+TestResults/
+
+# локальная база
+*.db
+*.db-shm
+*.db-wal
+
+# временные файлы
+*.tmp
+*.log
