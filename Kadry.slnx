@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Kadry.App/Kadry.App.csproj" />
+    <Project Path="src/Kadry.Core/Kadry.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Kadry.Core.Tests/Kadry.Core.Tests.csproj" />
+  </Folder>
+</Solution>
