@@ -1,5 +1,6 @@
 using System.IO;
 using System.Windows;
+using Kadry.App.Services;
 using Kadry.App.ViewModels;
 using Kadry.Core.Data;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,8 @@ namespace Kadry.App;
 /// <summary>Точка входа: подготовка базы данных и запуск главного окна.</summary>
 public partial class App : Application
 {
+    private MainWindow? _mainWindow;
+
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
@@ -24,11 +27,10 @@ public partial class App : Application
             var db = new KadryContext(options);
             DbInitializer.Initialize(db);
 
-            var window = new MainWindow
-            {
-                DataContext = new MainViewModel()
-            };
-            window.Show();
+            _mainWindow = new MainWindow();
+            var dialogs = new WpfDialogs(() => _mainWindow!);
+            _mainWindow.DataContext = new MainViewModel(db, dialogs);
+            _mainWindow.Show();
         }
         catch (Exception ex)
         {

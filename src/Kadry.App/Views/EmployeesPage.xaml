@@ -1,0 +1,50 @@
+<UserControl x:Class="Kadry.App.Views.EmployeesPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FontFamily="Segoe UI" FontSize="14">
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,12">
+            <TextBox Width="240" VerticalContentAlignment="Center"
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Delay=250}"
+                     ToolTip="Поиск по ФИО и табельному номеру" />
+            <ComboBox Width="200" Margin="8,0,0,0" VerticalContentAlignment="Center"
+                      ItemsSource="{Binding DepartmentFilters}"
+                      SelectedItem="{Binding DepartmentFilter}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <ComboBox Width="140" Margin="8,0,0,0" VerticalContentAlignment="Center"
+                      ItemsSource="{Binding StatusFilters}"
+                      SelectedItem="{Binding StatusFilter}" />
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,12,0,0">
+            <Button Content="Принять" Width="110" Command="{Binding HireCommand}" Margin="0,0,8,0" />
+            <Button Content="Изменить" Width="110" Command="{Binding EditCommand}" Margin="0,0,8,0" />
+            <Button Content="Уволить" Width="110" Command="{Binding FireCommand}" Margin="0,0,8,0" />
+            <Button Content="Удалить" Width="110" Command="{Binding DeleteCommand}" />
+        </StackPanel>
+
+        <DataGrid ItemsSource="{Binding Employees}"
+                  SelectedItem="{Binding SelectedEmployee}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  SelectionMode="Single"
+                  GridLinesVisibility="Horizontal"
+                  HeadersVisibility="Column"
+                  AlternatingRowBackground="#FAFAFA">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="2*" />
+                <DataGridTextColumn Header="Таб. номер" Binding="{Binding PersonnelNumber}" Width="*" />
+                <DataGridTextColumn Header="Отдел" Binding="{Binding Department}" Width="*" />
+                <DataGridTextColumn Header="Должность" Binding="{Binding Position}" Width="*" />
+                <DataGridTextColumn Header="Принят" Binding="{Binding HiredAt}" Width="90" />
+                <DataGridTextColumn Header="Статус" Binding="{Binding Status}" Width="130" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>

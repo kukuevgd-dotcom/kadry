@@ -1,4 +1,7 @@
 using Kadry.App.Infrastructure;
+using Kadry.App.Services;
+using Kadry.Core.Data;
+using Kadry.Core.Services;
 
 namespace Kadry.App.ViewModels;
 
@@ -16,12 +19,19 @@ public enum Section
 /// <summary>Модель представления главного окна: навигация по разделам.</summary>
 public class MainViewModel : ViewModelBase
 {
-    private Section _currentSection = Section.Dashboard;
-    private string _userName = "Кадровик";
-    private string _userRole = "кадровик";
+    private readonly EmployeesViewModel _employees;
+    private readonly DirectoriesViewModel _directories;
 
-    public MainViewModel()
+    private Section _currentSection = Section.Dashboard;
+
+    public MainViewModel(KadryContext db, IUiDialogs dialogs)
     {
+        var employeeService = new EmployeeService(db);
+        var directoryService = new DirectoryService(db);
+
+        _employees = new EmployeesViewModel(employeeService, directoryService, dialogs);
+        _directories = new DirectoriesViewModel(directoryService, dialogs);
+
         NavigateCommand = new RelayCommand(parameter =>
         {
             if (parameter is string name && Enum.TryParse<Section>(name, out var section))
@@ -37,9 +47,20 @@ public class MainViewModel : ViewModelBase
         set
         {
             if (SetProperty(ref _currentSection, value))
+            {
                 OnPropertyChanged(nameof(SectionTitle));
+                OnPropertyChanged(nameof(CurrentPage));
+            }
         }
     }
+
+    /// <summary>Модель представления текущего раздела; null — раздел ещё не реализован.</summary>
+    public object? CurrentPage => CurrentSection switch
+    {
+        Section.Employees => _employees,
+        Section.Directories => _directories,
+        _ => null
+    };
 
     public string SectionTitle => CurrentSection switch
     {
@@ -52,17 +73,7 @@ public class MainViewModel : ViewModelBase
         _ => "Кадры"
     };
 
-    /// <summary>Имя вошедшего пользователя (заполняется после авторизации).</summary>
-    public string UserName
-    {
-        get => _userName;
-        set => SetProperty(ref _userName, value);
-    }
+    public string UserName { get; set; } = "Кадровик";
 
-    /// <summary>Роль вошедшего пользователя.</summary>
-    public string UserRole
-    {
-        get => _userRole;
-        set => SetProperty(ref _userRole, value);
-    }
+    public string UserRole { get; set; } = "кадровик";
 }
