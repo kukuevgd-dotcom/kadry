@@ -1,7 +1,7 @@
 namespace Kadry.Core.Domain;
 
 /// <summary>Подразделение организации.</summary>
-public class Department
+public class Department : IHasId, IHasName
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -9,7 +9,7 @@ public class Department
 }
 
 /// <summary>Должность.</summary>
-public class Position
+public class Position : IHasId, IHasName
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -17,7 +17,7 @@ public class Position
 }
 
 /// <summary>Вид отпуска из справочника.</summary>
-public class VacationType
+public class VacationType : IHasId, IHasName
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
