@@ -3,6 +3,7 @@ using Kadry.App.Services;
 using Kadry.App.ViewModels;
 using Kadry.App.Views;
 using Kadry.Core.Domain;
+using Kadry.Core.Services;
 
 namespace Kadry.App.Services;
 
@@ -10,13 +11,30 @@ namespace Kadry.App.Services;
 public class WpfDialogs : IUiDialogs
 {
     private readonly Func<Window> _ownerAccessor;
+    private readonly VacationRequestService _requestService;
 
-    public WpfDialogs(Func<Window> ownerAccessor)
+    public WpfDialogs(Func<Window> ownerAccessor, VacationRequestService requestService)
     {
         _ownerAccessor = ownerAccessor;
+        _requestService = requestService;
     }
 
     private Window Owner => _ownerAccessor();
+
+    public RequestInput? EditRequest(
+        IReadOnlyList<Employee> employees,
+        IReadOnlyList<VacationType> vacationTypes)
+    {
+        var vm = new RequestDialogViewModel(_requestService, employees, vacationTypes);
+        var window = new RequestDialog
+        {
+            Owner = Owner,
+            DataContext = vm
+        };
+        vm.Submitted += (_, _) => window.DialogResult = true;
+
+        return window.ShowDialog() == true ? vm.Result : null;
+    }
 
     public EmployeeInput? EditEmployee(
         IReadOnlyList<Department> departments,

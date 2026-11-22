@@ -21,6 +21,7 @@ public class MainViewModel : ViewModelBase
 {
     private readonly EmployeesViewModel _employees;
     private readonly DirectoriesViewModel _directories;
+    private readonly RequestsViewModel _requests;
 
     private Section _currentSection = Section.Dashboard;
 
@@ -28,9 +29,11 @@ public class MainViewModel : ViewModelBase
     {
         var employeeService = new EmployeeService(db);
         var directoryService = new DirectoryService(db);
+        var requestService = new VacationRequestService(db);
 
         _employees = new EmployeesViewModel(employeeService, directoryService, dialogs);
         _directories = new DirectoriesViewModel(directoryService, dialogs);
+        _requests = new RequestsViewModel(requestService, employeeService, directoryService, dialogs);
 
         NavigateCommand = new RelayCommand(parameter =>
         {
@@ -59,6 +62,7 @@ public class MainViewModel : ViewModelBase
     {
         Section.Employees => _employees,
         Section.Directories => _directories,
+        Section.Requests => _requests,
         _ => null
     };
 

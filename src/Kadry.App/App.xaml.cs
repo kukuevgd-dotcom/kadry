@@ -28,7 +28,8 @@ public partial class App : Application
             DbInitializer.Initialize(db);
 
             _mainWindow = new MainWindow();
-            var dialogs = new WpfDialogs(() => _mainWindow!);
+            var requestService = new Kadry.Core.Services.VacationRequestService(db);
+            var dialogs = new WpfDialogs(() => _mainWindow!, requestService);
             _mainWindow.DataContext = new MainViewModel(db, dialogs);
             _mainWindow.Show();
         }

@@ -16,9 +16,21 @@ public record VacationTypeInput(
     int YearLimitDays,
     bool IsUnpaid);
 
+/// <summary>Данные заявления на отпуск из диалога.</summary>
+public record RequestInput(
+    int EmployeeId,
+    int VacationTypeId,
+    DateTime StartDate,
+    DateTime EndDate);
+
 /// <summary>Диалоги интерфейса. Реализация открывает окна поверх главного.</summary>
 public interface IUiDialogs
 {
+    /// <summary>Диалог регистрации заявления на отпуск. null — отмена.</summary>
+    RequestInput? EditRequest(
+        IReadOnlyList<Employee> employees,
+        IReadOnlyList<VacationType> vacationTypes);
+
     /// <summary>Диалог сотрудника. null — отмена. initial не задан — приём нового.</summary>
     EmployeeInput? EditEmployee(
         IReadOnlyList<Department> departments,

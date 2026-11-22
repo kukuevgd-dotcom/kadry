@@ -1,0 +1,61 @@
+<Window x:Class="Kadry.App.Views.RequestDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Регистрация заявления"
+        Width="460" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize" ShowInTaskbar="False"
+        FontFamily="Segoe UI" FontSize="14">
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="160" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Сотрудник:" VerticalAlignment="Center" Margin="0,0,10,8" />
+        <ComboBox Grid.Row="0" Grid.Column="1"
+                  ItemsSource="{Binding Employees}"
+                  SelectedItem="{Binding Employee}"
+                  DisplayMemberPath="FullName" Margin="0,0,0,8" />
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Вид отпуска:" VerticalAlignment="Center" Margin="0,0,10,8" />
+        <ComboBox Grid.Row="1" Grid.Column="1"
+                  ItemsSource="{Binding VacationTypes}"
+                  SelectedItem="{Binding VacationType}"
+                  DisplayMemberPath="Name" Margin="0,0,0,8" />
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Начало:" VerticalAlignment="Center" Margin="0,0,10,8" />
+        <DatePicker Grid.Row="2" Grid.Column="1"
+                    SelectedDate="{Binding StartDate}" Margin="0,0,0,8" />
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Окончание:" VerticalAlignment="Center" Margin="0,0,10,8" />
+        <DatePicker Grid.Row="3" Grid.Column="1"
+                    SelectedDate="{Binding EndDate}" Margin="0,0,0,8" />
+
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Календарных дней:" VerticalAlignment="Center" Margin="0,0,10,8" />
+        <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding DaysText}" Margin="0,4,0,8" />
+
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Остаток дней:" VerticalAlignment="Center" Margin="0,0,10,8" />
+        <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding RemainingText}" Margin="0,4,0,8" />
+
+        <TextBlock Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
+                   Text="{Binding Error}" Foreground="#DC2626" TextWrapping="Wrap" Margin="0,2,0,8" />
+
+        <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
+                    Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="ОК" Width="90" IsDefault="True"
+                    Command="{Binding OkCommand}" Margin="0,0,8,0" />
+            <Button Content="Отмена" Width="90" IsCancel="True" />
+        </StackPanel>
+    </Grid>
+</Window>
