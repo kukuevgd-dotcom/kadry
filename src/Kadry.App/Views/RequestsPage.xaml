@@ -15,6 +15,7 @@
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,12,0,0">
             <Button Content="Зарегистрировать" Width="150" Command="{Binding RegisterCommand}" Margin="0,0,8,0" />
             <Button Content="Согласовать" Width="130" Command="{Binding AgreeCommand}" Margin="0,0,8,0" />
+            <Button Content="Утвердить — приказ" Width="150" Command="{Binding ApproveCommand}" Margin="0,0,8,0" />
             <Button Content="Отклонить" Width="130" Command="{Binding RefuseCommand}" />
         </StackPanel>
 

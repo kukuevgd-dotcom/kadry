@@ -45,6 +45,7 @@ public class RequestsViewModel : ViewModelBase
 
         RegisterCommand = new RelayCommand(_ => Register());
         AgreeCommand = new RelayCommand(_ => Agree(), _ => SelectedRequest is { StatusName: "Новое" });
+        ApproveCommand = new RelayCommand(_ => Approve(), _ => SelectedRequest is { StatusName: "Согласовано" });
         RefuseCommand = new RelayCommand(_ => Refuse(),
             _ => SelectedRequest is { StatusName: "Новое" or "Согласовано" });
 
@@ -59,6 +60,8 @@ public class RequestsViewModel : ViewModelBase
     public RelayCommand RegisterCommand { get; }
 
     public RelayCommand AgreeCommand { get; }
+
+    public RelayCommand ApproveCommand { get; }
 
     public RelayCommand RefuseCommand { get; }
 
@@ -148,6 +151,28 @@ public class RequestsViewModel : ViewModelBase
         try
         {
             _service.Agree(SelectedRequest.Id);
+            Reload();
+        }
+        catch (Exception ex)
+        {
+            _dialogs.Error(ex.Message);
+        }
+    }
+
+    private void Approve()
+    {
+        if (SelectedRequest is null)
+            return;
+
+        if (!_dialogs.Confirm("Утверждение — издание приказа",
+                $"Утвердить заявление {SelectedRequest.Number} ({SelectedRequest.Employee}, " +
+                $"{SelectedRequest.Period}, {SelectedRequest.Days} дн.)?\n" +
+                "Будет издан приказ, дни зарезвируются."))
+            return;
+
+        try
+        {
+            _service.Approve(SelectedRequest.Id);
             Reload();
         }
         catch (Exception ex)

@@ -22,6 +22,7 @@ public class MainViewModel : ViewModelBase
     private readonly EmployeesViewModel _employees;
     private readonly DirectoriesViewModel _directories;
     private readonly RequestsViewModel _requests;
+    private readonly ScheduleViewModel _schedule;
 
     private Section _currentSection = Section.Dashboard;
 
@@ -34,6 +35,7 @@ public class MainViewModel : ViewModelBase
         _employees = new EmployeesViewModel(employeeService, directoryService, dialogs);
         _directories = new DirectoriesViewModel(directoryService, dialogs);
         _requests = new RequestsViewModel(requestService, employeeService, directoryService, dialogs);
+        _schedule = new ScheduleViewModel(requestService, directoryService);
 
         NavigateCommand = new RelayCommand(parameter =>
         {
@@ -63,6 +65,7 @@ public class MainViewModel : ViewModelBase
         Section.Employees => _employees,
         Section.Directories => _directories,
         Section.Requests => _requests,
+        Section.Schedule => _schedule,
         _ => null
     };
 
