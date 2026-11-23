@@ -129,6 +129,75 @@ public class VacationRequestService
         _db.SaveChanges();
     }
 
+    /// <summary>Записи об отпусках (приказы) за год, с фильтром по подразделению.</summary>
+    public List<VacationRecord> RecordsForYear(int year, int? departmentId = null)
+    {
+        var query = _db.VacationRecords
+            .Include(r => r.Employee)
+            .ThenInclude(e => e!.Department)
+            .Where(r => r.StartDate.Year == year);
+
+        if (departmentId is int depId)
+            query = query.Where(r => r.Employee!.DepartmentId == depId);
+
+        return query.OrderBy(r => r.Employee!.FullName).ThenBy(r => r.StartDate).ToList();
+    }
+
+    /// <summary>
+    /// Утверждение согласованного заявления: создаёт запись об отпуске (приказ)
+    /// и резервирует дни. Обе записи сохраняются одним SaveChanges — атомарно.
+    /// </summary>
+    public void Approve(int requestId)
+    {
+        var request = Load(requestId);
+        RequestRules.EnsureCanTransition(request.Status, RequestStatus.Approved);
+
+        var type = _db.VacationTypes.Find(request.VacationTypeId)!;
+        int days = RequestRules.DaysCount(request.StartDate, request.EndDate);
+
+        // Повторная проверка остатка: между согласованием и утверждением
+        // остаток мог измениться (другой приказ).
+        if (type.YearLimitDays > 0)
+        {
+            var records = _db.VacationRecords
+                .Where(r => r.EmployeeId == request.EmployeeId)
+                .ToList();
+            int remaining = RequestRules.RemainingDays(
+                type.YearLimitDays, records, request.StartDate.Year);
+
+            if (days > remaining)
+                throw new InvalidOperationException(
+                    $"Недостаточно дней: остаток {remaining}, запрошено {days}.");
+        }
+
+        // Повторная проверка пересечения с утверждёнными отпусками.
+        var overlaps = _db.VacationRecords
+            .Where(r => r.EmployeeId == request.EmployeeId && r.RequestId != requestId)
+            .Select(r => new { r.StartDate, r.EndDate })
+            .AsEnumerable()
+            .Select(r => (r.StartDate, r.EndDate))
+            .ToList();
+
+        if (RequestRules.OverlapsAny(overlaps, request.StartDate, request.EndDate))
+            throw new InvalidOperationException(
+                "Период пересекается с уже утверждённым отпуском этого сотрудника.");
+
+        var record = new VacationRecord
+        {
+            RequestId = request.Id,
+            EmployeeId = request.EmployeeId,
+            VacationTypeId = request.VacationTypeId,
+            StartDate = request.StartDate,
+            EndDate = request.EndDate,
+            Days = days
+        };
+
+        // одна транзакция SaveChanges: запись об отпуске + статус заявления
+        _db.VacationRecords.Add(record);
+        request.Status = RequestStatus.Approved;
+        _db.SaveChanges();
+    }
+
     /// <summary>Отклонение с обязательной причиной; терминальный статус.</summary>
     public void Refuse(int requestId, string reason)
     {
