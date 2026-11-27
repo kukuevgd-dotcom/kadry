@@ -20,6 +20,12 @@
         <DataTemplate DataType="{x:Type vm:ScheduleViewModel}">
             <views:SchedulePage />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+            <views:DashboardPage />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ReportsViewModel}">
+            <views:ReportsPage />
+        </DataTemplate>
         <Style x:Key="MenuButton" TargetType="Button">
             <Setter Property="HorizontalContentAlignment" Value="Left" />
             <Setter Property="Padding" Value="12,9" />

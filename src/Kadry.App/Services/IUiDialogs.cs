@@ -46,6 +46,9 @@ public interface IUiDialogs
     /// <summary>Выбор даты. null — отмена.</summary>
     DateTime? PickDate(string title, DateTime initial);
 
+    /// <summary>Диалог сохранения файла CSV. null — отмена.</summary>
+    string? SaveFile(string defaultName);
+
     /// <summary>Подтверждение (Да/Нет).</summary>
     bool Confirm(string title, string message);
 

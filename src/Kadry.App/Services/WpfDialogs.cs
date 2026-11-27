@@ -61,6 +61,19 @@ public class WpfDialogs : IUiDialogs
     public DateTime? PickDate(string title, DateTime initial)
         => DateDialog.Show(Owner, title, initial);
 
+    public string? SaveFile(string defaultName)
+    {
+        var dialog = new Microsoft.Win32.SaveFileDialog
+        {
+            FileName = defaultName,
+            DefaultExt = ".csv",
+            Filter = "CSV-файл (*.csv)|*.csv",
+            AddExtension = true
+        };
+
+        return dialog.ShowDialog(Owner) == true ? dialog.FileName : null;
+    }
+
     public bool Confirm(string title, string message)
         => MessageBox.Show(Owner, message, title,
             MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes;

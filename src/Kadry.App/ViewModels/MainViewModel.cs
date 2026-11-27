@@ -23,6 +23,8 @@ public class MainViewModel : ViewModelBase
     private readonly DirectoriesViewModel _directories;
     private readonly RequestsViewModel _requests;
     private readonly ScheduleViewModel _schedule;
+    private readonly DashboardViewModel _dashboard;
+    private readonly ReportsViewModel _reports;
 
     private Section _currentSection = Section.Dashboard;
 
@@ -31,11 +33,14 @@ public class MainViewModel : ViewModelBase
         var employeeService = new EmployeeService(db);
         var directoryService = new DirectoryService(db);
         var requestService = new VacationRequestService(db);
+        var reportService = new ReportService(db);
 
         _employees = new EmployeesViewModel(employeeService, directoryService, dialogs);
         _directories = new DirectoriesViewModel(directoryService, dialogs);
         _requests = new RequestsViewModel(requestService, employeeService, directoryService, dialogs);
         _schedule = new ScheduleViewModel(requestService, directoryService);
+        _dashboard = new DashboardViewModel(reportService);
+        _reports = new ReportsViewModel(reportService, directoryService, dialogs);
 
         NavigateCommand = new RelayCommand(parameter =>
         {
@@ -62,10 +67,12 @@ public class MainViewModel : ViewModelBase
     /// <summary>Модель представления текущего раздела; null — раздел ещё не реализован.</summary>
     public object? CurrentPage => CurrentSection switch
     {
+        Section.Dashboard => _dashboard,
         Section.Employees => _employees,
         Section.Directories => _directories,
         Section.Requests => _requests,
         Section.Schedule => _schedule,
+        Section.Reports => _reports,
         _ => null
     };
 
